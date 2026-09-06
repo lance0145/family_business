@@ -1,0 +1,15 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
+
+# Node (in case tooling is added later)
+node_modules/
+package-lock.json
+npm-debug.log*
+
+# Netlify local state
+.netlify/
