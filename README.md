@@ -29,11 +29,10 @@ robots.txt / sitemap.xml   Basic SEO files
    - Update `https://www.ailan.example` in `robots.txt`, `sitemap.xml`, and every `<link rel="canonical">` / `og:url` / `og:image` tag to your real domain.
    - All photography in `assets/images/` is sourced from Unsplash (free license, no attribution legally required) — swap for your own brand photography, real project screenshots, or team headshots when available. See `assets/images/CREDITS.md` for what each file is and its source.
 
-2. **Wire up the contact form**
-   The form in `contact.html` currently validates client-side and shows a success message, but doesn't actually send anywhere (a static site has no backend). Pick one:
-   - **Easiest:** sign up for a free form backend like [Formspree](https://formspree.io) or [Getform](https://getform.io), set `<form id="contact-form" action="https://formspree.io/f/yourFormId" method="POST">`, and remove/adjust the `preventDefault()` block in `js/main.js` (search for "Contact form validation").
-   - **More control:** use [EmailJS](https://www.emailjs.com/) to send straight to `lance0145@gmail.com` from client-side JS.
-   - **Later, with Next.js:** replace the fetch target with a Next.js API route or server action that emails you or writes to a database.
+2. **Contact form — already wired up for Netlify**
+   The form in `contact.html` validates client-side, then submits via `fetch()` to Netlify Forms (see `js/main.js`, "Contact form validation"). This **only works once deployed on Netlify** — Netlify detects the `data-netlify="true"` form at deploy time and starts collecting submissions automatically (viewable under Site settings → Forms). No third-party service or backend needed.
+   - **New submissions notification:** in the Netlify dashboard, go to Forms → your form → Settings, and add an email notification to `lance0145@gmail.com` so you're alerted per submission (Netlify doesn't email you by default).
+   - **If you deploy anywhere other than Netlify** (Vercel, GitHub Pages, Cloudflare Pages, cPanel), this fetch call won't work — swap it for a form backend like [Formspree](https://formspree.io)/[Getform](https://getform.io), or [EmailJS](https://www.emailjs.com/) for client-side sending, or a Next.js API route if you migrate.
 
 3. **Newsletter signup**
    The footer newsletter form is currently a front-end-only stub. Connect it to Mailchimp, ConvertKit, Brevo, or similar when ready.
@@ -54,7 +53,9 @@ Then visit `http://localhost:8000`.
 
 ## Deploying
 
-Any static host works out of the box: Netlify, Vercel, GitHub Pages, Cloudflare Pages, or traditional cPanel hosting — just upload the folder.
+This repo is set up to deploy on **Netlify** (recommended — it's what the contact form above relies on): connect the GitHub repo at [app.netlify.com](https://app.netlify.com) → Add new site → Import an existing project, pick this repo, leave build settings blank (no build command, publish directory `/`), and deploy. Every push to `main` auto-deploys from then on.
+
+Any other static host also works out of the box (Vercel, GitHub Pages, Cloudflare Pages, traditional cPanel hosting) — just note the contact form needs a different backend on those (see above).
 
 ## Migrating to Next.js later
 

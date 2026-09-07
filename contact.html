@@ -56,7 +56,11 @@
 
     <div class="reveal">
       <div id="form-success" class="form-success">Thanks! Your message has been received — we'll get back to you within one business day.</div>
-      <form id="contact-form" novalidate>
+      <form id="contact-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+        <input type="hidden" name="form-name" value="contact">
+        <p style="position:absolute;left:-9999px;" aria-hidden="true">
+          <label>Leave this field blank: <input name="bot-field" tabindex="-1" autocomplete="off"></label>
+        </p>
         <div class="form-grid">
           <div class="field">
             <label for="name">Full Name <span class="req">*</span></label>

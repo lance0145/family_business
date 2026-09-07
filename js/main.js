@@ -140,18 +140,38 @@
       if (!valid) return;
 
       var successBox = document.querySelector("#form-success");
-      contactForm.style.display = "none";
-      if (successBox) successBox.classList.add("show");
+      var submitBtn = contactForm.querySelector('button[type="submit"]');
+      var originalBtnText = submitBtn ? submitBtn.textContent : "";
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Sending..."; }
 
       /*
-        This form currently submits nowhere (no backend on a static site).
-        To go live, either:
-          1) Point the <form action> at a form service like Formspree,
-             Basin, or Getform and remove this preventDefault handler, or
-          2) Replace with a fetch() call to a serverless function / API route
-             (e.g. once migrated to Next.js) that emails ailan's inbox.
-        See README.md for setup notes.
+        Submits to Netlify Forms (works once this site is deployed on Netlify
+        with the form's data-netlify="true" attribute — see contact.html).
+        Netlify parses a POST to any path as long as the encoded body
+        includes the matching "form-name" field, so this works without a
+        dedicated backend or a third-party form service.
+
+        If you deploy somewhere other than Netlify, swap this fetch() call
+        for a form service like Formspree/Getform, or a serverless function
+        once migrated to Next.js. See README.md for setup notes.
       */
+      var formData = new FormData(contactForm);
+      var encoded = new URLSearchParams(formData).toString();
+
+      fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: encoded
+      })
+        .then(function (response) {
+          if (!response.ok) throw new Error("Form submission failed (" + response.status + ")");
+          contactForm.style.display = "none";
+          if (successBox) successBox.classList.add("show");
+        })
+        .catch(function () {
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText; }
+          alert("Sorry, something went wrong sending your message. Please email us directly at lance0145@gmail.com.");
+        });
     });
   }
 
