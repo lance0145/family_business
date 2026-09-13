@@ -154,13 +154,12 @@ section { padding: 96px 0; }
 
 .nav-inner { display: flex; align-items: center; justify-content: space-between; width: 100%; }
 
-.brand { display: flex; align-items: center; gap: 10px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 20px; }
-.brand-mark {
-  width: 34px; height: 34px; border-radius: 9px;
-  background: var(--gradient);
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 16px; font-weight: 700;
-  box-shadow: 0 6px 16px rgba(108,92,231,0.4);
+.brand { display: flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 20px; }
+.brand-spark {
+  display: inline-block;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #00D2D3;
+  margin: 0 4px; vertical-align: middle;
 }
 
 .nav-links { display: flex; align-items: center; gap: 36px; }
