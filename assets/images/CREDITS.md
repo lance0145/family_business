@@ -15,4 +15,4 @@ All photos below are from [Unsplash](https://unsplash.com), used under the [Unsp
 | service-analytics.jpg | photo-1460925895917-afdab827c52f | Services page — Data & AI-Powered Analytics |
 | service-consulting.jpg | photo-1517245386807-bb43f82c33c4 | Services page — AI Strategy & Consulting |
 
-These are stock/illustrative photos, not photos of AILan's actual clients, staff, or projects — replace with real photography as it becomes available (especially before publicly claiming specific client results tied to an image).
+These are stock/illustrative photos, not photos of IntelliAgent's actual clients, staff, or projects — replace with real photography as it becomes available (especially before publicly claiming specific client results tied to an image).

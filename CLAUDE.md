@@ -4,7 +4,7 @@ Guidance for Claude Code when working in this repository.
 
 ## What this is
 
-Static marketing site for **AILan**, an AI & automation services business. Plain HTML/CSS/vanilla JS: no framework, no package.json, no build step, no tests. Deployed on **Netlify** (publish directory `/`, no build command). Every push to `main` auto-deploys. `README.md` has launch and deploy notes for the site owner.
+Static marketing site for **IntelliAgent**, an AI & automation services business. Plain HTML/CSS/vanilla JS: no framework, no package.json, no build step, no tests. Deployed on **Netlify** (publish directory `/`, no build command). Every push to `main` auto-deploys. `README.md` has launch and deploy notes for the site owner.
 
 ## Running locally
 
@@ -36,12 +36,12 @@ Which page has which component:
 - `404.html` is standalone: it has no header or footer and uses the `.error-page` styles.
 - Only `index.html` has JSON-LD structured data.
 
-Each page's `<head>` has its own `<title>`, meta description, canonical URL, and OG tags. All of them use the placeholder domain `https://www.ailan.example`, which also appears in `robots.txt` and `sitemap.xml`. When you add a page, add it to `sitemap.xml` and to the nav in every page.
+Each page's `<head>` has its own `<title>`, meta description, canonical URL, and OG tags. All of them use the placeholder domain `https://www.intelliagent.pro`, which also appears in `robots.txt` and `sitemap.xml`. When you add a page, add it to `sitemap.xml` and to the nav in every page.
 
 ## Conventions
 
-- **Brand wordmark:** `<a class="brand"><span class="gradient-text">AI<span class="brand-spark"></span>Lan</span></a>` is a text-only logo with a cyan spark dot. There is no icon badge, so don't reintroduce one.
-- **Theming:** all colors, radii, and shadows are CSS custom properties in `:root`. Dark mode overrides them under `[data-theme="dark"]` on `<html>`. Use the variables (`--primary`, `--text-muted`, `--surface`, `--border`, `--gradient`, etc.) and never hard-code colors. The chosen theme is saved in `localStorage` under the key `ailan-theme` and falls back to `prefers-color-scheme`.
+- **Brand wordmark:** `<a class="brand"><span class="gradient-text">Intelli<span class="brand-spark"></span>Agent</span></a>` is a text-only logo with a cyan spark dot. There is no icon badge, so don't reintroduce one.
+- **Theming:** all colors, radii, and shadows are CSS custom properties in `:root`. Dark mode overrides them under `[data-theme="dark"]` on `<html>`. Use the variables (`--primary`, `--text-muted`, `--surface`, `--border`, `--gradient`, etc.) and never hard-code colors. The chosen theme is saved in `localStorage` under the key `intelliagent-theme` and falls back to `prefers-color-scheme`.
 - **Fonts:** Inter for body text and Space Grotesk for headings, both loaded from Google Fonts in each `<head>`.
 - **JS hooks are plain classes and data attributes.** `main.js` looks elements up by selector and skips anything that isn't on the page, so you can add or remove sections without changing JS. The hooks:
   - `.reveal` fades an element in on scroll (IntersectionObserver adds `.in`).
@@ -57,7 +57,7 @@ Each page's `<head>` has its own `<title>`, meta description, canonical URL, and
 
 ## Placeholder content (don't present as real)
 
-The testimonials on `index.html`, the team bios on `about.html`, the privacy and terms text, and the `ailan.example` domain are all placeholders. The contact email in the form's error fallback (`main.js`) and in the README is the owner's real address.
+The testimonials on `index.html`, the team bios on `about.html`, the privacy and terms text, and the `intelliagent.pro` domain are all placeholders. The contact email in the form's error fallback (`main.js`) and in the README is the owner's real address.
 
 ## Future direction
 

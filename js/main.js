@@ -1,11 +1,11 @@
-/* AILan — AI & Automation Solutions — site scripts */
+/* IntelliAgent — AI & Automation Solutions — site scripts */
 (function () {
   "use strict";
 
   /* ---------- Theme toggle ---------- */
   var root = document.documentElement;
   var stored = null;
-  try { stored = localStorage.getItem("ailan-theme"); } catch (e) {}
+  try { stored = localStorage.getItem("intelliagent-theme"); } catch (e) {}
   if (stored === "dark" || (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
     root.setAttribute("data-theme", "dark");
   }
@@ -13,7 +13,7 @@
     btn.addEventListener("click", function () {
       var isDark = root.getAttribute("data-theme") === "dark";
       if (isDark) { root.removeAttribute("data-theme"); } else { root.setAttribute("data-theme", "dark"); }
-      try { localStorage.setItem("ailan-theme", isDark ? "light" : "dark"); } catch (e) {}
+      try { localStorage.setItem("intelliagent-theme", isDark ? "light" : "dark"); } catch (e) {}
     });
   });
 

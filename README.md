@@ -1,4 +1,4 @@
-# AILan — AI & Automation Solutions website
+# IntelliAgent — AI & Automation Solutions website
 
 A complete, static, responsive marketing site for an AI & automation services business. No build step required — plain HTML/CSS/JS.
 
@@ -26,7 +26,7 @@ robots.txt / sitemap.xml   Basic SEO files
    - Testimonials on `index.html` are samples — swap in real client quotes (or remove the section).
    - Team bios on `about.html` — add real people or remove the placeholder cards.
    - `privacy.html` and `terms.html` are placeholder legal text — have them reviewed by a professional, especially if you'll handle EU (GDPR) or California (CCPA) resident data.
-   - Update `https://www.ailan.example` in `robots.txt`, `sitemap.xml`, and every `<link rel="canonical">` / `og:url` / `og:image` tag to your real domain.
+   - Update `https://www.intelliagent.pro` in `robots.txt`, `sitemap.xml`, and every `<link rel="canonical">` / `og:url` / `og:image` tag to your real domain.
    - All photography in `assets/images/` is sourced from Unsplash (free license, no attribution legally required) — swap for your own brand photography, real project screenshots, or team headshots when available. See `assets/images/CREDITS.md` for what each file is and its source.
 
 2. **Contact form — already wired up for Netlify**
