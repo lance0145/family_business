@@ -36,7 +36,7 @@ Which page has which component:
 - `404.html` is standalone: it has no header or footer and uses the `.error-page` styles.
 - Only `index.html` has JSON-LD structured data.
 
-Each page's `<head>` has its own `<title>`, meta description, canonical URL, and OG tags. All of them use the placeholder domain `https://www.intelliagent.pro`, which also appears in `robots.txt` and `sitemap.xml`. When you add a page, add it to `sitemap.xml` and to the nav in every page.
+Each page's `<head>` has its own `<title>`, meta description, canonical URL, and OG tags. All of them use the real domain `https://www.intelliagent.pro`, which also appears in `robots.txt` and `sitemap.xml`. When you add a page, add it to `sitemap.xml` and to the nav in every page.
 
 ## Conventions
 
@@ -57,7 +57,7 @@ Each page's `<head>` has its own `<title>`, meta description, canonical URL, and
 
 ## Placeholder content (don't present as real)
 
-The testimonials on `index.html`, the team bios on `about.html`, the privacy and terms text, and the `intelliagent.pro` domain are all placeholders. The contact email in the form's error fallback (`main.js`) and in the README is the owner's real address.
+The testimonials on `index.html` and the privacy/terms text are still placeholders. The team bios on `about.html` are the real team as of the IntelliAgent rebrand, and `intelliagent.pro` is the real live domain — not placeholders. The contact email in the form's error fallback (`main.js`) and in the README is the owner's real address.
 
 ## Future direction
 
