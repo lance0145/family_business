@@ -57,7 +57,7 @@ Each page's `<head>` has its own `<title>`, meta description, canonical URL, and
 
 ## Placeholder content (don't present as real)
 
-`index.html` has no testimonials section — it was removed rather than shipped with fabricated client quotes/names; add one back once there's a real quote to use. `privacy.html`/`terms.html` now describe what the site actually does (Netlify Forms, chat-log, localStorage theme only) but are not lawyer-reviewed — each still carries an inline disclaimer saying so. The team bios on `about.html` are the real team as of the IntelliAgent rebrand, and `intelliagent.pro` is the real live domain — not placeholders. The contact email in the form's error fallback (`main.js`) and in the README is the owner's real address.
+`index.html` has no testimonials section — it was removed rather than shipped with fabricated client quotes/names; add one back once there's a real client quote to use. `about.html` has a real "Track Record" section instead: Allan's actual freelance roles, two genuine LinkedIn recommendations (from former colleague/manager, not IntelliAgent clients — don't relabel them as client testimonials), and his Databricks Gen AI certification, all linking to his real LinkedIn profile for verification. `privacy.html`/`terms.html` now describe what the site actually does (Netlify Forms, chat-log, localStorage theme only) but are not lawyer-reviewed — each still carries an inline disclaimer saying so. The team bios on `about.html` are the real team as of the IntelliAgent rebrand, and `intelliagent.pro` is the real live domain — not placeholders. The contact email in the form's error fallback (`main.js`) and in the README is the owner's real address.
 
 ## Future direction
 
