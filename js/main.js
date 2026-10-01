@@ -240,10 +240,37 @@
       for (var i = 0; i < demoRules.length; i++) {
         var keywords = demoRules[i].keywords;
         for (var j = 0; j < keywords.length; j++) {
-          if (lower.indexOf(keywords[j]) !== -1) return demoRules[i].reply;
+          if (lower.indexOf(keywords[j]) !== -1) {
+            return { reply: demoRules[i].reply, matched: true };
+          }
         }
       }
-      return fallbackReplies[Math.floor(Math.random() * fallbackReplies.length)];
+      return {
+        reply: fallbackReplies[Math.floor(Math.random() * fallbackReplies.length)],
+        matched: false
+      };
+    }
+
+    /*
+      Fire-and-forget: logs a chat question the demo couldn't match to
+      a rule, via the hidden "chat-log" Netlify form (see the <form
+      name="chat-log" hidden> near the bottom of this page). Lets the
+      site owner review real unanswered questions later and turn the
+      common ones into new demoRules. Never blocks the chat UI and
+      failures are silently ignored — this is a nice-to-have, not
+      something a visitor should ever see fail.
+    */
+    function logUnmatchedQuestion(text) {
+      var formBody = new URLSearchParams({
+        "form-name": "chat-log",
+        question: text,
+        page: location.pathname
+      }).toString();
+      fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formBody
+      }).catch(function () {});
     }
 
     if (form) {
@@ -262,7 +289,9 @@
 
         setTimeout(function () {
           typing.remove();
-          addBubble(matchReply(text), "bot");
+          var result = matchReply(text);
+          addBubble(result.reply, "bot");
+          if (!result.matched) logUnmatchedQuestion(text);
         }, 900);
       });
     }

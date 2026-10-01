@@ -238,6 +238,16 @@
   </form>
 </div>
 
+<!-- Hidden so Netlify registers "chat-log": logs chat questions the
+     demo widget couldn't match a rule for, so they can be reviewed
+     and turned into new demoRules later. See js/main.js matchReply(). -->
+<form name="chat-log" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="chat-log">
+  <input type="text" name="question">
+  <input type="text" name="page">
+  <input name="bot-field">
+</form>
+
 <button class="back-to-top" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 
 <script src="js/main.js"></script>
