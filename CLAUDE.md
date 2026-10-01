@@ -57,7 +57,7 @@ Each page's `<head>` has its own `<title>`, meta description, canonical URL, and
 
 ## Placeholder content (don't present as real)
 
-The testimonials on `index.html` and the privacy/terms text are still placeholders. The team bios on `about.html` are the real team as of the IntelliAgent rebrand, and `intelliagent.pro` is the real live domain — not placeholders. The contact email in the form's error fallback (`main.js`) and in the README is the owner's real address.
+`index.html` has no testimonials section — it was removed rather than shipped with fabricated client quotes/names; add one back once there's a real quote to use. `privacy.html`/`terms.html` now describe what the site actually does (Netlify Forms, chat-log, localStorage theme only) but are not lawyer-reviewed — each still carries an inline disclaimer saying so. The team bios on `about.html` are the real team as of the IntelliAgent rebrand, and `intelliagent.pro` is the real live domain — not placeholders. The contact email in the form's error fallback (`main.js`) and in the README is the owner's real address.
 
 ## Future direction
 
