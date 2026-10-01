@@ -201,12 +201,50 @@
     chatBtn.addEventListener("click", function () { chatPanel.classList.toggle("open"); });
     if (closeBtn) closeBtn.addEventListener("click", function () { chatPanel.classList.remove("open"); });
 
-    var demoReplies = [
-      "Great question! Our team typically scopes a project like that within 2-3 business days.",
-      "We support integrations with most CRMs, help desks, and internal tools via API or webhook.",
-      "I can have someone from our team follow up by email — want to leave your contact details?",
-      "Automation like that usually pays for itself within a few months for teams your size."
+    /*
+      This is a scripted demo, not a real AI backend: it matches keywords
+      in what the visitor typed against the rules below and replies with
+      the first match, so answers stay on-topic instead of random.
+      Keep rules specific (services/pricing/location/etc.) before the
+      generic fallback set at the bottom.
+    */
+    var demoRules = [
+      { keywords: ["price", "pricing", "cost", "how much", "budget", "fee", "quote"],
+        reply: "Our packages start at $1,990 for a single automation or chatbot, with Growth and Enterprise tiers above that — exact pricing depends on scope. Check our Pricing page, or book a free consultation for a custom quote." },
+      { keywords: ["chatbot", "chat bot", "virtual assistant"],
+        reply: "Yes — we build custom AI chatbots just like this one, trained on your business and deployable on your website, WhatsApp, or Messenger." },
+      { keywords: ["automat"],
+        reply: "We automate repetitive work like data entry, invoicing, reporting, and approvals — freeing up your team's time. Want a free audit of your current workflow?" },
+      { keywords: ["service", "offer", "what do you do", "what can you"],
+        reply: "We build AI chatbots, automate business processes, develop custom AI agents, connect your tools together, and handle data & analytics. See the full list on our Services page." },
+      { keywords: ["location", "where are you", "based", "office", "address", "country"],
+        reply: "We're based in the Philippines and work with clients worldwide — fully remote-first." },
+      { keywords: ["how long", "timeline", "turnaround", "when can"],
+        reply: "Simple projects usually launch in 1-3 weeks; larger custom builds take 4-8 weeks depending on scope." },
+      { keywords: ["contact", "talk to", "human", "call", "phone", "reach you", "email you"],
+        reply: "You can reach us directly at lance0145@gmail.com or +63 930 022 8998, or use the form on our Contact page — we reply within 1 business day." },
+      { keywords: ["hi", "hello", "hey"],
+        reply: "Hi there! I'm a demo of the kind of assistant we build for clients. Ask me about our services, pricing, or how automation could help your business." },
+      { keywords: ["thank"],
+        reply: "You're welcome! Let us know if there's anything else you'd like to know." }
     ];
+
+    var fallbackReplies = [
+      "That's worth a proper answer from our team — want to leave your contact details, or reach us at lance0145@gmail.com?",
+      "Good question. I'm just a demo right now, so for specifics I'd recommend booking a free consultation and we'll go through it together.",
+      "I don't have a scripted answer for that one — but our team does. Try our Contact page, or ask me about services, pricing, or timelines."
+    ];
+
+    function matchReply(text) {
+      var lower = text.toLowerCase();
+      for (var i = 0; i < demoRules.length; i++) {
+        var keywords = demoRules[i].keywords;
+        for (var j = 0; j < keywords.length; j++) {
+          if (lower.indexOf(keywords[j]) !== -1) return demoRules[i].reply;
+        }
+      }
+      return fallbackReplies[Math.floor(Math.random() * fallbackReplies.length)];
+    }
 
     if (form) {
       form.addEventListener("submit", function (e) {
@@ -224,8 +262,7 @@
 
         setTimeout(function () {
           typing.remove();
-          var reply = demoReplies[Math.floor(Math.random() * demoReplies.length)];
-          addBubble(reply, "bot");
+          addBubble(matchReply(text), "bot");
         }, 900);
       });
     }
