@@ -496,11 +496,12 @@ section { padding: 96px 0; }
 
 /* ---------- Chat widget (live demo) ---------- */
 .chat-widget-btn {
-  /* bottom:96px (not 26px) clears Netlify's own "Powered by Netlify"
+  /* bottom:72px (not 26px) clears Netlify's own "Powered by Netlify"
      badge, which renders as a fixed, always-on-top (z-index ~2^31)
      200x64px box flush in the bottom-right corner on every page --
-     26px put this button's hit area right under it, blocking clicks. */
-  position: fixed; bottom: 96px; right: 26px; z-index: 1200;
+     26px put this button's hit area right under it, blocking clicks.
+     72px sits just above the badge with an 8px gap. */
+  position: fixed; bottom: 72px; right: 26px; z-index: 1200;
   width: 60px; height: 60px; border-radius: 50%; background: var(--gradient); color: #fff;
   display: flex; align-items: center; justify-content: center; border: none;
   box-shadow: 0 10px 26px rgba(108,92,231,0.45); transition: transform .2s ease;
@@ -509,7 +510,7 @@ section { padding: 96px 0; }
 .chat-widget-btn svg { width: 26px; height: 26px; }
 
 .chat-panel {
-  position: fixed; bottom: 168px; right: 26px; z-index: 1200;
+  position: fixed; bottom: 144px; right: 26px; z-index: 1200;
   width: 340px; max-width: calc(100vw - 40px); height: 440px; max-height: calc(100vh - 160px);
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
   box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden;
