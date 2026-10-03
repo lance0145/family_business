@@ -13,3 +13,7 @@ npm-debug.log*
 
 # Netlify local state
 .netlify/
+
+# Secrets - never commit
+.env
+.env.*
