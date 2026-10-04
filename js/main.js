@@ -307,6 +307,31 @@
       }).catch(function () {});
     }
 
+    /*
+      Real backend: POSTs to a Netlify Function (netlify/functions/chat.js)
+      that calls Gemini server-side (API keys never reach the browser) and
+      rotates across multiple keys if one is rate-limited or revoked. Only
+      exists once deployed on Netlify -- locally (python http.server) this
+      404s immediately, which is caught below and falls back to the
+      scripted demoRules, so local dev still shows something working.
+    */
+    var chatHistory = [];
+    var MAX_HISTORY_TURNS = 6;
+
+    function askGemini(text) {
+      return fetch("/.netlify/functions/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text, history: chatHistory })
+      }).then(function (res) {
+        if (!res.ok) throw new Error("chat function status " + res.status);
+        return res.json();
+      }).then(function (data) {
+        if (!data || !data.reply) throw new Error("empty reply");
+        return data.reply;
+      });
+    }
+
     if (form) {
       form.addEventListener("submit", function (e) {
         e.preventDefault();
@@ -321,12 +346,18 @@
         body.appendChild(typing);
         body.scrollTop = body.scrollHeight;
 
-        setTimeout(function () {
+        askGemini(text).then(function (reply) {
+          typing.remove();
+          addBubble(reply, "bot");
+          chatHistory.push({ role: "user", text: text });
+          chatHistory.push({ role: "bot", text: reply });
+          chatHistory = chatHistory.slice(-MAX_HISTORY_TURNS * 2);
+        }).catch(function () {
           typing.remove();
           var result = matchReply(text);
           addBubble(result.reply, "bot");
           if (!result.matched) logUnmatchedQuestion(text);
-        }, 900);
+        });
       });
     }
 
