@@ -101,7 +101,9 @@ exports.handler = async function (event) {
       );
 
       if (!res.ok) {
-        lastError = "Gemini status " + res.status;
+        var errBody = "";
+        try { errBody = (await res.text()).slice(0, 300); } catch (e2) {}
+        lastError = "Gemini status " + res.status + " " + errBody;
         continue; // rate-limited, revoked, or otherwise bad key -- try the next one
       }
 
