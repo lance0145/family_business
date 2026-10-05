@@ -59,7 +59,22 @@ exports.handler = async function (event) {
     });
   contents.push({ role: "user", parts: [{ text: message }] });
 
-  var keys = (process.env.GEMINI_API_KEYS || "")
+  /*
+    Each key lives in its own env var (GEMINI_API_KEYS, GEMINI_API_KEYS2,
+    GEMINI_API_KEYS3, ...) rather than one comma-joined value, so no
+    single var/file ever holds more than one key at a time -- Netlify
+    passes them in separately and they're only combined here, in memory,
+    at request time. A value may still contain commas (e.g. if someone
+    does join two into one var), which still works via the split/flat.
+  */
+  var keys = [];
+  if (process.env.GEMINI_API_KEYS) keys.push(process.env.GEMINI_API_KEYS);
+  for (var n = 2; n <= 20; n++) {
+    var v = process.env["GEMINI_API_KEYS" + n];
+    if (v) keys.push(v);
+  }
+  keys = keys
+    .join(",")
     .split(",")
     .map(function (k) { return k.trim(); })
     .filter(Boolean);
