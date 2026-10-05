@@ -8,7 +8,18 @@
   scripted demoRules reply, so a visitor never sees a dead chat.
 */
 
-var MODEL = "gemini-3.8-flash";
+/*
+  gemini-flash-lite-latest: picked over gemini-3.8-flash because the
+  latter's free quota turned out to be exhausted by a single request
+  (confirmed empirically -- not a bug in the rotation logic, Google's
+  own error body said "exceeded your current quota"). This lite model
+  held up for ~7 of 8 rapid-fire requests in testing. The "-latest"
+  alias also auto-points at whatever current lite model Google
+  supports, so it shouldn't 404 "no longer available" the way
+  gemini-2.0-flash and gemini-2.5-flash did on this same key when
+  Google retired them. Does NOT support thinkingConfig (400s if sent).
+*/
+var MODEL = "gemini-flash-lite-latest";
 var MAX_MESSAGE_LENGTH = 500;
 var MAX_HISTORY_TURNS = 6;
 var MAX_OUTPUT_TOKENS = 300;
@@ -86,7 +97,7 @@ exports.handler = async function (event) {
   var requestBody = JSON.stringify({
     system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
     contents: contents,
-    generationConfig: { maxOutputTokens: MAX_OUTPUT_TOKENS, temperature: 0.4, thinkingConfig: { thinkingBudget: 0 } }
+    generationConfig: { maxOutputTokens: MAX_OUTPUT_TOKENS, temperature: 0.4 }
   });
 
   var startIndex = Math.floor(Math.random() * keys.length);
