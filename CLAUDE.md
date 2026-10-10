@@ -36,7 +36,7 @@ Which page has which component:
 - Full pages (index, services, pricing, portfolio, about, contact) have the header, footer and chat widget.
 - `privacy.html` and `terms.html` have the header and footer but no chat widget.
 - `404.html` is standalone: it has no header or footer and uses the `.error-page` styles.
-- Only `index.html` has JSON-LD structured data.
+- JSON-LD structured data (for SEO rich results): `index.html` has Organization, `services.html` has an `ItemList` of `Service` entries (one per service anchor), `pricing.html` has an `ItemList` of `Offer` entries (Starter/Growth priced in USD, Enterprise unpriced/custom), `contact.html` has `ContactPage` with a `contactPoint`. Keep these in sync with the real on-page content — don't let them drift (e.g. if a price or service changes, update its JSON-LD too).
 
 Each page's `<head>` has its own `<title>`, meta description, canonical URL, and OG tags. All of them use the real domain `https://www.intelliagent.pro`, which also appears in `robots.txt` and `sitemap.xml`. When you add a page, add it to `sitemap.xml` and to the nav in every page.
 
