@@ -5,6 +5,7 @@ All photos below are from [Unsplash](https://unsplash.com), used under the [Unsp
 | File | Unsplash photo ID | Used on |
 |---|---|---|
 | hero-bg.jpg / og-image.jpg | photo-1694903089438-bf28d4697d9a | Home hero background, social share image |
+| mission-target.jpg | photo-1776847651583-1d804b5cc339 | About page — Our Mission (archery target, replaced an earlier dartboard photo) |
 | case-retail.jpg | photo-1626863905121-3b0c0ed7b94c | Retail / AI Support Chatbot case study |
 | case-finance.jpg | photo-1707157284454-553ef0a4ed0d | Finance / Invoice Automation case study |
 | case-logistics.jpg | photo-1551288049-bebda4e38f71 | Logistics / Ops Dashboard case study |
