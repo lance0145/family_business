@@ -170,7 +170,7 @@
         })
         .catch(function () {
           if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText; }
-          alert("Sorry, something went wrong sending your message. Please email us directly at lance0145@gmail.com.");
+          alert("Sorry, something went wrong sending your message. Please email us directly at allan@intelliagent.pro.");
         });
     });
   }
@@ -212,7 +212,7 @@
       { keywords: ["price", "pricing", "cost", "how much", "budget", "fee", "quote"],
         reply: "Our packages start at $1,990 for a single automation or chatbot, with Growth and Enterprise tiers above that — exact pricing depends on scope. Check our Pricing page, or book a free consultation for a custom quote." },
       { keywords: ["are you real", "are you human", "are you ai", "are you a bot", "are you a real", "real person"],
-        reply: "I'm a scripted demo bot showing the kind of assistant IntelliAgent builds for clients — for a real conversation, reach our team at lance0145@gmail.com." },
+        reply: "I'm a scripted demo bot showing the kind of assistant IntelliAgent builds for clients — for a real conversation, reach our team at allan@intelliagent.pro." },
       { keywords: ["chatbot", "chat bot", "virtual assistant"],
         reply: "Yes — we build custom AI chatbots just like this one, trained on your business and deployable on your website, WhatsApp, or Messenger." },
       { keywords: ["ai agent", "agents"],
@@ -254,17 +254,17 @@
       { keywords: ["free trial", "demo", "try it", "test it"],
         reply: "This chat is actually a live example of the kind of assistant we build! For a full demo tailored to your business, book a free consultation." },
       { keywords: ["contact", "contac", "talk to", "human", "call", "phone", "reach you", "email you"],
-        reply: "You can reach us directly at lance0145@gmail.com or +63 930 022 8998, or use the form on our Contact page — we reply within 1 business day." },
+        reply: "You can reach us directly at allan@intelliagent.pro or +63 930 022 8998, or use the form on our Contact page — we reply within 1 business day." },
       { keywords: ["hi", "hello", "hey"],
         reply: "Hi there! I'm a demo of the kind of assistant we build for clients. Ask me about our services, pricing, or how automation could help your business." },
       { keywords: ["bye", "goodbye", "see you"],
-        reply: "Thanks for stopping by! Reach out anytime at lance0145@gmail.com if you'd like to talk further." },
+        reply: "Thanks for stopping by! Reach out anytime at allan@intelliagent.pro if you'd like to talk further." },
       { keywords: ["thank"],
         reply: "You're welcome! Let us know if there's anything else you'd like to know." }
     ];
 
     var fallbackReplies = [
-      "That's worth a proper answer from our team — want to leave your contact details, or reach us at lance0145@gmail.com?",
+      "That's worth a proper answer from our team — want to leave your contact details, or reach us at allan@intelliagent.pro?",
       "Good question. I'm just a demo right now, so for specifics I'd recommend booking a free consultation and we'll go through it together.",
       "I don't have a scripted answer for that one — but our team does. Try our Contact page, or ask me about services, pricing, or timelines."
     ];
@@ -582,7 +582,7 @@
         saveChatState();
       }).catch(function () {
         typing.remove();
-        addBubble("I couldn't send that through — reach us directly at lance0145@gmail.com, or try again below.", "bot");
+        addBubble("I couldn't send that through — reach us directly at allan@intelliagent.pro, or try again below.", "bot");
         addQuickReplies([{ label: "Try again" }], function () { submitLead(); });
         saveChatState();
       });

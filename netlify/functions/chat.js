@@ -38,7 +38,7 @@ var SYSTEM_PROMPT = [
   "- Team: Allan Abendanio (Founder & AI Automation Lead), Joanna Catalan (Operations Administrator), Maria Aileen De Guzman (Finance & Accounting), Angelyn Cattenoz (Marketing & Advertising), Ana Christine Abendanio (Sales & Business Development), Andy Dan Allada (Security & Compliance). Allan has real freelance AI/automation experience (APEX Co., Titus Global-Tech, SonglabAI) and a Databricks Generative AI certification — see the About page's Track Record section.",
   "- Typical timeline: simple projects 1-3 weeks, larger custom builds 4-8 weeks.",
   "- Location: Philippines, remote-first, works with clients worldwide.",
-  "- Contact: lance0145@gmail.com, +63 930 022 8998, or the Contact page form (reply within 1 business day).",
+  "- Contact: allan@intelliagent.pro, +63 930 022 8998, or the Contact page form (reply within 1 business day).",
   "- Security/privacy: least-privilege access, data encrypted in transit, no training external models on client data without consent — see the Privacy Policy.",
   "- This chat widget itself is a real example of the kind of assistant IntelliAgent builds for clients.",
   "",
