@@ -317,6 +317,16 @@
     */
     var chatHistory = [];
     var MAX_HISTORY_TURNS = 6;
+    var STORAGE_KEY = "intelliagent_chat_state";
+    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var LEAD_INTENT_KEYWORDS = ["quote", "get started", "book a call", "sign me up", "leave my info"];
+
+    // Captured before any JS mutates the panel, so "Start over" can restore
+    // the page's own hardcoded greeting bubble exactly as shipped.
+    var originalBodyHTML = body.innerHTML;
+
+    var leadFlow = { active: false, step: null, data: {} };
+    var currentQuickReplyWrap = null;
 
     function askGemini(text) {
       return fetch("/.netlify/functions/chat", {
@@ -332,19 +342,351 @@
       });
     }
 
+    function addBubble(text, who) {
+      var b = document.createElement("div");
+      b.className = "bubble " + who;
+      b.textContent = text;
+      body.appendChild(b);
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function addTyping() {
+      var typing = document.createElement("div");
+      typing.className = "bubble bot typing";
+      typing.innerHTML = "<span></span><span></span><span></span>";
+      body.appendChild(typing);
+      body.scrollTop = body.scrollHeight;
+      return typing;
+    }
+
+    /*
+      Quick-reply buttons: always static labels we write ourselves (never
+      user input, so no injection risk). Clicking removes the row, echoes
+      the choice as a "user" bubble so the transcript still reads like a
+      normal conversation, then calls onSelect(value). Only one row is
+      ever live at a time -- a new one replaces whatever was still
+      dangling, and typing a reply instead also clears it (see the submit
+      handler below).
+    */
+    function addQuickReplies(options, onSelect) {
+      if (currentQuickReplyWrap) { currentQuickReplyWrap.remove(); currentQuickReplyWrap = null; }
+
+      var wrap = document.createElement("div");
+      wrap.className = "bubble bot quick-replies";
+
+      for (var i = 0; i < options.length; i++) {
+        (function (opt) {
+          var label = typeof opt === "string" ? opt : opt.label;
+          var value = typeof opt === "string" ? opt : (opt.value || opt.label);
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "qr-btn";
+          btn.textContent = label;
+          btn.addEventListener("click", function () {
+            wrap.remove();
+            if (currentQuickReplyWrap === wrap) currentQuickReplyWrap = null;
+            addBubble(label, "user");
+            onSelect(value);
+          });
+          wrap.appendChild(btn);
+        })(options[i]);
+      }
+
+      body.appendChild(wrap);
+      body.scrollTop = body.scrollHeight;
+      currentQuickReplyWrap = wrap;
+    }
+
+    // Shared by every lead-flow question: shows the bot's prompt, then a
+    // Cancel option alongside any step-specific choices (e.g. the plan
+    // names at the service step).
+    function promptFlowStep(message, options) {
+      addBubble(message, "bot");
+      var all = (options || []).concat([{ label: "Cancel", value: "__CANCEL__" }]);
+      addQuickReplies(all, function (value) {
+        if (value === "__CANCEL__") { cancelLeadFlow(); return; }
+        handleFlowStep(value);
+      });
+    }
+
+    /*
+      Pricing-tier cards -- copy hand-synced from pricing.html and
+      chat.js's SYSTEM_PROMPT. If prices/tiers ever change, update all
+      three (this is the one deliberate tradeoff of rendering pricing
+      directly in the widget instead of only describing it in text).
+    */
+    function addPricingCards() {
+      var wrap = document.createElement("div");
+      wrap.className = "bubble bot pricing-cards";
+
+      var tiers = [
+        { name: "Starter", price: "$1,990", note: "one-time", blurb: "A single automation or chatbot to prove the value fast." },
+        { name: "Growth", price: "$6,490", note: "one-time", blurb: "For businesses ready to automate multiple workflows." },
+        { name: "Enterprise", price: "Custom", note: "", blurb: "Custom AI systems, ongoing partnership, and dedicated support." }
+      ];
+
+      for (var i = 0; i < tiers.length; i++) {
+        (function (tier) {
+          var card = document.createElement("div");
+          card.className = "pricing-card";
+
+          var h = document.createElement("h4");
+          h.textContent = tier.name;
+
+          var price = document.createElement("div");
+          price.className = "pricing-card-price";
+          price.textContent = tier.price + (tier.note ? " " + tier.note : "");
+
+          var blurb = document.createElement("p");
+          blurb.className = "pricing-card-blurb";
+          blurb.textContent = tier.blurb;
+
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "qr-btn";
+          btn.textContent = "Choose this plan";
+          btn.addEventListener("click", function () {
+            addBubble("Choose this plan: " + tier.name, "user");
+            startLeadFlow(tier.name);
+          });
+
+          card.appendChild(h);
+          card.appendChild(price);
+          card.appendChild(blurb);
+          card.appendChild(btn);
+          wrap.appendChild(card);
+        })(tiers[i]);
+      }
+
+      body.appendChild(wrap);
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function addAvailabilityBadge() {
+      var badge = document.createElement("div");
+      badge.className = "chat-availability";
+      badge.textContent = "⚡ Replies in seconds · Available 24/7";
+      body.appendChild(badge);
+    }
+
+    function saveChatState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          history: chatHistory,
+          leadFlow: leadFlow,
+          panelOpen: chatPanel.classList.contains("open")
+        }));
+      } catch (e) {}
+    }
+
+    function loadChatState() {
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function startOver() {
+      chatHistory = [];
+      leadFlow = { active: false, step: null, data: {} };
+      currentQuickReplyWrap = null;
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+      body.innerHTML = originalBodyHTML;
+      addAvailabilityBadge();
+    }
+
+    /*
+      Lead-capture flow: a deterministic 4-question state machine, not an
+      LLM tool call. A flow this important to get right (a real sales
+      lead) shouldn't depend on a lite model reliably deciding to "call a
+      function" -- see js/main.js's sibling comment in chat.js for why
+      gemini-flash-lite-latest specifically isn't trusted with that here.
+      While leadFlow.active, the submit handler below routes straight to
+      handleFlowStep instead of askGemini/matchReply.
+    */
+    function startLeadFlow(prefillService) {
+      leadFlow = { active: true, step: "name", data: { service: prefillService || null } };
+      promptFlowStep("Awesome — let's get you a quick quote. What's your name?");
+      saveChatState();
+    }
+
+    function cancelLeadFlow() {
+      leadFlow = { active: false, step: null, data: {} };
+      addBubble("No problem — let me know if you change your mind. Anything else I can help with?", "bot");
+      saveChatState();
+    }
+
+    function handleFlowStep(text) {
+      var step = leadFlow.step;
+      var value = (text || "").toString().trim();
+
+      if (step === "name") {
+        if (!value) { promptFlowStep("I didn't catch that — what's your name?"); return; }
+        leadFlow.data.name = value.slice(0, 100);
+        leadFlow.step = "email";
+        promptFlowStep("Thanks, " + leadFlow.data.name + "! What's the best email to reach you at?");
+
+      } else if (step === "email") {
+        if (!EMAIL_RE.test(value)) {
+          promptFlowStep("That doesn't look like a valid email — mind double-checking?");
+          return;
+        }
+        leadFlow.data.email = value.slice(0, 200);
+        if (leadFlow.data.service) {
+          leadFlow.step = "time";
+          promptFlowStep("Got it. What's a good day/time for a quick call? (e.g. \"weekday mornings\" or \"Thu 3pm PH time\")");
+        } else {
+          leadFlow.step = "service";
+          promptFlowStep("Which service or plan are you interested in?",
+            [{ label: "Starter" }, { label: "Growth" }, { label: "Enterprise" }, { label: "Not sure yet" }]);
+        }
+
+      } else if (step === "service") {
+        leadFlow.data.service = value.slice(0, 200) || "Not sure yet";
+        leadFlow.step = "time";
+        promptFlowStep("Got it. What's a good day/time for a quick call? (e.g. \"weekday mornings\" or \"Thu 3pm PH time\")");
+
+      } else if (step === "time") {
+        leadFlow.data.preferredTime = value.slice(0, 200) || "no preference given";
+        submitLead();
+      }
+
+      saveChatState();
+    }
+
+    function submitLead() {
+      var data = leadFlow.data;
+      var typing = addTyping();
+
+      fetch("/.netlify/functions/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          service: data.service,
+          preferredTime: data.preferredTime,
+          page: location.pathname,
+          hp: ""
+        })
+      }).then(function (res) {
+        if (!res.ok) throw new Error("lead status " + res.status);
+        return res.json();
+      }).then(function (resData) {
+        if (!resData || !resData.ok) throw new Error("lead not ok");
+        typing.remove();
+        addBubble("Thanks " + data.name + " — I've sent this to our team and Ana will follow up at " + data.email + " soon!", "bot");
+        leadFlow = { active: false, step: null, data: {} };
+        saveChatState();
+      }).catch(function () {
+        typing.remove();
+        addBubble("I couldn't send that through — reach us directly at lance0145@gmail.com, or try again below.", "bot");
+        addQuickReplies([{ label: "Try again" }], function () { submitLead(); });
+        saveChatState();
+      });
+    }
+
+    function rerenderCurrentFlowStep() {
+      var prompts = {
+        name: "Picking up where we left off — what's your name?",
+        email: "What's the best email to reach you at?",
+        service: "Which service or plan are you interested in?",
+        time: "What's a good day/time for a quick call? (e.g. \"weekday mornings\" or \"Thu 3pm PH time\")"
+      };
+      var msg = prompts[leadFlow.step] || "Let's continue — go ahead.";
+      if (leadFlow.step === "service") {
+        promptFlowStep(msg, [{ label: "Starter" }, { label: "Growth" }, { label: "Enterprise" }, { label: "Not sure yet" }]);
+      } else {
+        promptFlowStep(msg);
+      }
+    }
+
+    // Always-visible actions: reachable regardless of scroll position,
+    // injected once between the message list and the input bar.
+    var quickActionsBar = document.createElement("div");
+    quickActionsBar.className = "chat-quick-actions";
+
+    var pricingActionBtn = document.createElement("button");
+    pricingActionBtn.type = "button";
+    pricingActionBtn.className = "qa-btn";
+    pricingActionBtn.textContent = "💲 Pricing";
+    pricingActionBtn.addEventListener("click", function () {
+      addBubble("💲 Pricing", "user");
+      addPricingCards();
+    });
+
+    var quoteActionBtn = document.createElement("button");
+    quoteActionBtn.type = "button";
+    quoteActionBtn.className = "qa-btn";
+    quoteActionBtn.textContent = "📝 Get a quote";
+    quoteActionBtn.addEventListener("click", function () {
+      addBubble("📝 Get a quote", "user");
+      startLeadFlow(null);
+    });
+
+    var startOverActionBtn = document.createElement("button");
+    startOverActionBtn.type = "button";
+    startOverActionBtn.className = "qa-btn";
+    startOverActionBtn.textContent = "🔄 Start over";
+    startOverActionBtn.addEventListener("click", startOver);
+
+    quickActionsBar.appendChild(pricingActionBtn);
+    quickActionsBar.appendChild(quoteActionBtn);
+    quickActionsBar.appendChild(startOverActionBtn);
+    chatPanel.insertBefore(quickActionsBar, form);
+
+    addAvailabilityBadge();
+
+    // Restore a visitor's conversation across page navigation/reloads --
+    // the chat widget markup is duplicated per-page, so without this,
+    // clicking from Pricing to Contact would otherwise look like talking
+    // to a different, amnesiac bot every time.
+    (function restoreChatState() {
+      var saved = loadChatState();
+      if (!saved) return;
+
+      if (Array.isArray(saved.history) && saved.history.length) {
+        chatHistory = saved.history;
+        for (var i = 0; i < chatHistory.length; i++) {
+          addBubble(chatHistory[i].text, chatHistory[i].role === "bot" ? "bot" : "user");
+        }
+      }
+      if (saved.leadFlow && saved.leadFlow.active) {
+        leadFlow = saved.leadFlow;
+        rerenderCurrentFlowStep();
+      }
+      if (saved.panelOpen) {
+        chatPanel.classList.add("open");
+      }
+    })();
+
     if (form) {
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         var text = input.value.trim();
         if (!text) return;
+
+        if (currentQuickReplyWrap) { currentQuickReplyWrap.remove(); currentQuickReplyWrap = null; }
+
         addBubble(text, "user");
         input.value = "";
 
-        var typing = document.createElement("div");
-        typing.className = "bubble bot typing";
-        typing.innerHTML = "<span></span><span></span><span></span>";
-        body.appendChild(typing);
-        body.scrollTop = body.scrollHeight;
+        if (leadFlow.active) {
+          handleFlowStep(text);
+          return;
+        }
+
+        var lower = text.toLowerCase();
+        for (var li = 0; li < LEAD_INTENT_KEYWORDS.length; li++) {
+          if (lower.indexOf(LEAD_INTENT_KEYWORDS[li]) !== -1) {
+            startLeadFlow(null);
+            return;
+          }
+        }
+
+        var typing = addTyping();
 
         askGemini(text).then(function (reply) {
           typing.remove();
@@ -352,21 +694,15 @@
           chatHistory.push({ role: "user", text: text });
           chatHistory.push({ role: "bot", text: reply });
           chatHistory = chatHistory.slice(-MAX_HISTORY_TURNS * 2);
+          saveChatState();
         }).catch(function () {
           typing.remove();
           var result = matchReply(text);
           addBubble(result.reply, "bot");
           if (!result.matched) logUnmatchedQuestion(text);
+          saveChatState();
         });
       });
-    }
-
-    function addBubble(text, who) {
-      var b = document.createElement("div");
-      b.className = "bubble " + who;
-      b.textContent = text;
-      body.appendChild(b);
-      body.scrollTop = body.scrollHeight;
     }
   }
 })();

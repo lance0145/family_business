@@ -18,3 +18,6 @@ npm-debug.log*
 .env
 .env.*
 secret.txt
+
+# Unrelated local sales/lead-gen tool - not part of the site, never commit
+outreach/

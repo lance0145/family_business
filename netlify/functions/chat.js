@@ -24,6 +24,9 @@ var MAX_MESSAGE_LENGTH = 500;
 var MAX_HISTORY_TURNS = 6;
 var MAX_OUTPUT_TOKENS = 300;
 
+// Pricing facts below are hand-synced in THREE places: pricing.html, this
+// SYSTEM_PROMPT, and the pricing-card copy in js/main.js (addPricingCards).
+// Update all three together if a price or tier ever changes.
 var SYSTEM_PROMPT = [
   "You are the IntelliAgent Assistant, a live chat widget on the IntelliAgent website (intelliagent.pro) — an AI & automation services agency based in the Philippines, working with clients worldwide, remote-first.",
   "",
@@ -32,7 +35,7 @@ var SYSTEM_PROMPT = [
   "Facts to answer from (do not invent anything beyond this):",
   "- Services: AI Chatbots & Virtual Assistants, Business Process Automation, Custom AI Agent & App Development, Workflow & Systems Integration, Data & AI-Powered Analytics, AI Strategy & Consulting.",
   "- Pricing (USD, starting points — final quote after a free consultation): Starter $1,990 one-time (1 chatbot/automation, up to 2 integrations, 2 weeks support). Growth $6,490 one-time (up to 3 automations or 1 custom AI agent, unlimited integrations, 1 month support, most popular). Enterprise: custom pricing (unlimited automations/agents, dedicated team, SLA). Ongoing support retainers start at $650/month. Third-party tool/API costs (OpenAI, Zapier, hosting) are billed separately at cost.",
-  "- Team: Allan Abendanio (Founder & AI Automation Lead), Joanna Catalan (Operations Administrator), Maria Aileen De Guzman (Finance & Accounting), Angelyn Cattenoz (Marketing & Advertising), Andy Dan Allada (Security & Compliance). Allan has real freelance AI/automation experience (APEX Co., Titus Global-Tech, SonglabAI) and a Databricks Generative AI certification — see the About page's Track Record section.",
+  "- Team: Allan Abendanio (Founder & AI Automation Lead), Joanna Catalan (Operations Administrator), Maria Aileen De Guzman (Finance & Accounting), Angelyn Cattenoz (Marketing & Advertising), Ana Christine Abendanio (Sales & Business Development), Andy Dan Allada (Security & Compliance). Allan has real freelance AI/automation experience (APEX Co., Titus Global-Tech, SonglabAI) and a Databricks Generative AI certification — see the About page's Track Record section.",
   "- Typical timeline: simple projects 1-3 weeks, larger custom builds 4-8 weeks.",
   "- Location: Philippines, remote-first, works with clients worldwide.",
   "- Contact: lance0145@gmail.com, +63 930 022 8998, or the Contact page form (reply within 1 business day).",

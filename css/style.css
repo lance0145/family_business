@@ -528,6 +528,38 @@ section { padding: 96px 0; }
 .chat-panel-foot button { width: 38px; height: 38px; border-radius: 50%; background: var(--gradient); color: #fff; border: none; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .chat-panel-foot button svg { width: 16px; height: 16px; }
 
+.chat-availability { font-size: 11.5px; color: var(--text-muted); text-align: center; padding: 2px 0 6px; }
+
+.chat-quick-actions { display: flex; gap: 6px; padding: 8px 12px; border-top: 1px solid var(--border); overflow-x: auto; }
+.qa-btn { flex-shrink: 0; font-size: 12.5px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); white-space: nowrap; }
+.qa-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+/* Quick-reply / pricing-card "bubbles" are bot-side containers for
+   interactive content, not text -- unset the normal .bubble.bot padding
+   so the buttons/cards inside control their own spacing. */
+.quick-replies, .pricing-cards { background: none; padding: 0; max-width: 100%; display: flex; flex-wrap: wrap; gap: 8px; }
+
+.qr-btn { font-size: 13px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--primary); background: var(--surface); color: var(--primary); font-weight: 600; cursor: pointer; }
+.qr-btn:hover { background: var(--primary); color: #fff; }
+
+.pricing-card { flex: 1 1 140px; min-width: 130px; border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; background: var(--surface); display: flex; flex-direction: column; gap: 6px; }
+.pricing-card h4 { font-size: 14px; margin: 0; }
+.pricing-card-price { font-weight: 700; font-size: 14px; color: var(--primary); }
+.pricing-card-blurb { font-size: 12px; color: var(--text-muted); margin: 0; flex: 1; }
+.pricing-card .qr-btn { width: 100%; text-align: center; padding: 6px 10px; font-size: 12.5px; }
+
+/* Full-screen takeover below 480px -- the 4-question lead flow and
+   3-across pricing cards don't fit comfortably in the fixed 340x440
+   desktop panel. The launcher button's bottom:72px is untouched here;
+   it still needs to clear Netlify's own badge on mobile too. */
+@media (max-width: 480px) {
+  .chat-panel {
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%; height: 100%; max-width: 100%; max-height: 100%;
+    border-radius: 0;
+  }
+}
+
 /* ---------- Back to top ---------- */
 .back-to-top {
   position: fixed; bottom: 26px; left: 26px; z-index: 1100;
